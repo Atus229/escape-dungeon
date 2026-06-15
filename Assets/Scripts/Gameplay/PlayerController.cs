@@ -1,25 +1,29 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))] 
 public class PlayerController : MonoBehaviour
 {
+    //-------VARIABLES-------
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _gravity = -9.81f;
-    [SerializeField] private float _mouseSensitivity = 2f; // tốc độ xoay theo 2 trục
+    [SerializeField] private float _mouseSensitivity = 2f; 
     [SerializeField] private Transform _cameraRoot;
 
-    private float _xRotation = 0f; //Xoay theo trục x
     private CharacterController _cc;
 
-    private Vector3 _velocity;// vector3 -> lưu vận tốc tích lũy theo thời gian theo y
+    private float _xRotation = 0f; 
+    private Vector3 _velocity;
 
+    //-------LIFE CYCLE METHOD-------
+    #region LifeCycleMethod
     void Awake()
     {
        _cc = GetComponent<CharacterController>();
     }
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked; // khóa chuột trong màn hình trò chơi
+        Cursor.lockState = CursorLockMode.Locked; 
     }
 
     private void Update()
@@ -27,19 +31,28 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleGravity();
         HandleRotation();
+        HandleCursor();
+     
+    }
+    #endregion
 
+    //-------PRIVATE METHOD-------
+    #region PrivateMethod
+    private void HandleCursor()
+    {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Cursor.lockState = CursorLockMode.None; //Mở khóa chuột khi nhấn ESC
+            Cursor.lockState = CursorLockMode.None; 
         }
         else if (Input.GetMouseButtonDown(0) && Cursor.lockState == CursorLockMode.None)
         {
-            Cursor.lockState = CursorLockMode.Locked; //Khóa chuột khi nhấn chuột trái
+            Cursor.lockState = CursorLockMode.Locked; 
         }
     }
 
     private void HandleGravity()
     {
+        // Small negative value keeps CharacterController.isGrounded reliable
         if (_cc.isGrounded)
         {
             _velocity.y = -2f;
@@ -61,32 +74,35 @@ public class PlayerController : MonoBehaviour
 
         if (moveDir.magnitude > 1f)
         {
-            moveDir.Normalize(); //Normalize -> độ dài vector = 1
+            moveDir.Normalize(); 
         }
         _cc.Move(moveDir * _moveSpeed * Time.deltaTime);
 
     }
+
     private void HandleRotation()
     {
         if (Cursor.lockState != CursorLockMode.Locked) {
             return;
         }
 
-        // 1. Đọc input chuột
+        if(_cameraRoot == null)
+        {
+            Debug.LogError("Camera Root is not assigned in the inspector.");
+            return;
+        }
+       
         float mouseX = Input.GetAxis("Mouse X") * _mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * _mouseSensitivity;
 
-
-        // 2. Tích lũy góc dọc -> lên xuông, đảo dấu vì unity có trục x xoay từ trên xuống
+        // Negate mouseY: Unity's X-axis rotation is inverted relative to mouse movement
         _xRotation -= mouseY;
 
-        // 3. Giới hạn góc dọc
         _xRotation = Mathf.Clamp(_xRotation, -80f, 80f);
 
-        // 4. Gán rotation cho CameraRoot (chỉ trục X)
         _cameraRoot.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
 
-        // 5. Xoay Player theo chiều ngang
         transform.Rotate(Vector3.up * mouseX);
     }
+    #endregion
 }
