@@ -83,15 +83,15 @@ namespace EscapeDungeon.Maze
             }
             else if (nX == cX && cY + 1 == nY)
             {
-                //nextCell nằm bên dưới
-                currentCell.RemoveWall(Direction.Down);
-                nextCell.RemoveWall(Direction.Top);
+                //nextCell nằm bên trên -> theo trục unity(z) thì y+1 là đi lên
+                currentCell.RemoveWall(Direction.Top);
+                nextCell.RemoveWall(Direction.Down);
             }
             else if (nX == cX && cY - 1 == nY)
             {
-                //nextCell nằm bên trên
-                currentCell.RemoveWall(Direction.Top);
-                nextCell.RemoveWall(Direction.Down);
+                //nextCell nằm bên dưới
+                currentCell.RemoveWall(Direction.Down);
+                nextCell.RemoveWall(Direction.Top);
             }
             else
             {
