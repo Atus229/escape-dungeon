@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using UnityEngine;
 
@@ -14,18 +15,23 @@ namespace EscapeDungeon.Maze
         [SerializeField] private GameObject gatePrefab;
 
         private MazeGrid mazeGrid;
-        private MazeGenerator mazeGenerator;
 
-        //Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        private void InitializeMaze(MazeGrid mazeGrid)
         {
-            InitializeMaze();
+            width = mazeGrid.Width;
+            height = mazeGrid.Height;
 
-            //Tạo sàn cho width x height mazecell
+            ClearMazeVisual();
             BuildFloor();
-
-            //Tạo tường cho từng mazecell
             BuildWallsAndGates();
+        }
+
+        private void ClearMazeVisual()
+        {
+            foreach(Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
         }
 
         private void BuildWallsAndGates()
@@ -90,12 +96,5 @@ namespace EscapeDungeon.Maze
             }
         }
 
-        private void InitializeMaze()
-        {
-            mazeGrid = new MazeGrid(width, height);
-            mazeGenerator = new MazeGenerator();
-
-            mazeGenerator.MazeGenerate(mazeGrid, 0, 0);
-        }
     }
 }
