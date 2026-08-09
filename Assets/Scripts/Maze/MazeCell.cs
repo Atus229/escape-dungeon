@@ -3,15 +3,16 @@ using System.Diagnostics;
 
 namespace EscapeDungeon.Maze
 {
+    [Serializable]
     public class MazeCell
     {
-        public int X { get; private set;}
-        public int Y { get; private set; }
-        public bool Visited { get; private set; }
-        public bool HasLeftWall { get; private set; }
-        public bool HasRightWall { get; private set; }
-        public bool HasTopWall { get; private set; }
-        public bool HasDownWall { get; private set; }
+        public int X;
+        public int Y;
+        public bool Visited;
+        public bool HasLeftWall;
+        public bool HasRightWall;
+        public bool HasTopWall;
+        public bool HasDownWall;
 
         public MazeCell(int x, int y)
         {
@@ -49,6 +50,15 @@ namespace EscapeDungeon.Maze
                     throw new ArgumentOutOfRangeException("Không phải hướng hợp lệ được lưu...");
                     break;
             }
+        }
+
+        public static bool IsEqual(MazeCell currentCell, MazeCell exitCell)
+        {
+            if(currentCell.X == exitCell.X && currentCell.Y == exitCell.Y)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -2,8 +2,10 @@ using EscapeDungeon.Maze;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Unity.VisualScripting.Antlr3.Runtime.Collections;
+using UnityEditor;
 
 
 namespace EscapeDungeon.Algorithms
@@ -20,11 +22,11 @@ namespace EscapeDungeon.Algorithms
             var visited = new bool[width, height];
             var parent = new MazeCell[width, height];
             bool found = false;
-
+            
             //guard clause
             ValidiateInputs(maze, startCell, exitCell);
 
-            if (startCell == exitCell)
+            if (MazeCell.IsEqual(startCell,exitCell))
             {
                 path.Add(exitCell);
                 return path;
@@ -40,7 +42,7 @@ namespace EscapeDungeon.Algorithms
             {
                 currentCell = stack.Pop();
 
-                if (currentCell == exitCell)
+                if (MazeCell.IsEqual(currentCell, exitCell))
                 {
                     found = true;
                     break;
@@ -54,6 +56,7 @@ namespace EscapeDungeon.Algorithms
                     visited[neighbor.X, neighbor.Y] = true;
                     parent[neighbor.X, neighbor.Y] = currentCell;
                     stack.Push(neighbor);
+                   
                 }
             }
 
@@ -127,7 +130,7 @@ namespace EscapeDungeon.Algorithms
                 }
                 var x = directions[i].X;
                 var y = directions[i].Y;
-                if (directions[i] != null && visited[x,y] != true && !HasWallBetween(currentCell, directions[i]))
+                if (visited[x,y] != true && !HasWallBetween(currentCell, directions[i]))
                 {
                     neighbors.Add(directions[i]);
                 }
@@ -156,12 +159,12 @@ namespace EscapeDungeon.Algorithms
                 //nextCell nằm bên trái
                 return true;
             }
-            else if ((nX == cX && cY + 1 == nY) && (currentCell.HasDownWall == true))
+            else if ((nX == cX && cY + 1 == nY) && (currentCell.HasTopWall == true))
             {
                 //nextCell nằm bên dưới
                 return true;
             }
-            else if ((nX == cX && cY - 1 == nY) && (currentCell.HasTopWall == true))
+            else if ((nX == cX && cY - 1 == nY) && (currentCell.HasDownWall == true))
             {
                 //nextCell nằm bên trên
                 return true;
