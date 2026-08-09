@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace EscapeDungeon.Maze
 {
-    class MazeGenerator
+    class MazeGenerator : MonoBehaviour
     {
-        private Random _random = new Random();
+        private System.Random _random = new System.Random();
 
-        public void MazeGenerate(MazeGrid maze, int startX, int startY)
+        public void MazeGenerate(MazeGrid maze)
         {
             //Khởi tạo biến
             var stack = new Stack<MazeCell>();
             var neighbors = new List<MazeCell>();
-            MazeCell startCell = maze.GetCell(startX, startY);
+            MazeCell startCell = maze.startCell;
             MazeCell currentCell;
             MazeCell nextCell;
 
@@ -23,7 +24,7 @@ namespace EscapeDungeon.Maze
                 throw new ArgumentNullException("Bạn chưa khởi tạo maze");
             }
 
-            if(startX < 0 || startX >= maze.Width || startY <0 || startY >= maze.Height)
+            if(startCell.X < 0 || startCell.X >= maze.Width || startCell.Y <0 || startCell.Y >= maze.Height)
             {
                 throw new ArgumentOutOfRangeException("Điểm bắt đầu không thuộc trong maze");
             }
